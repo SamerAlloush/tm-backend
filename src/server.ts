@@ -6,6 +6,7 @@ import conversationRoutes from './interfaces/routes/conversationRoutes';
 import messageRoutes from './interfaces/routes/messageRoutes';
 import attachmentRoutes from './interfaces/routes/attachmentRoutes';
 import authRoutes from './interfaces/routes/authRoutes';
+import emailRoutes from './interfaces/routes/emailRoutes';
 import path from 'path';
 import cors from 'cors';
 
@@ -25,6 +26,7 @@ app.use('/api/conversations', conversationRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/attachments', attachmentRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/email', emailRoutes);
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 // Demo endpoints from demoapp/app.js

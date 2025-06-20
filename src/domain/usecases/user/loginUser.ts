@@ -16,7 +16,7 @@ export class LoginUser {
     const isMatch = await AuthService.comparePassword(password, user.password);
     if (!isMatch) return null;
     const otp = OtpService.generateOtp();
-    const otpExpires = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+    const otpExpires = new Date(Date.now() + 30 * 60 * 1000); // 30 minutes
     await this.userRepository.setOtp(user.email, otp, otpExpires);
     return { user, otp };
   }
