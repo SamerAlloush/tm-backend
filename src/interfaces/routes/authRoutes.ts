@@ -8,6 +8,7 @@ router.post('/signup', signup);
 router.post('/verify-signup', verifySignup);
 router.post('/verify-otp', verifySignup); // Alias for verify-signup
 router.post('/resend-signup-otp', resendSignupOtp);
+router.post('/resend-otp', resendSignupOtp); // Alias for resend-signup-otp
 router.post('/debug-otp', debugOtp); // Debug endpoint
 router.post('/login', login);
 

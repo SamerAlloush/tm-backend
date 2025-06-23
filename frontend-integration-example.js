@@ -24,6 +24,7 @@ const SignupForm = () => {
     { value: 'customer', label: 'Customer' },
     { value: 'vendor', label: 'Vendor' },
     { value: 'manager', label: 'Manager' },
+    { value: 'project_manager', label: 'Project Manager' },
     // Note: 'admin' role should typically be assigned by existing admins
   ];
 

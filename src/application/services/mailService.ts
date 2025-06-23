@@ -87,10 +87,10 @@ If you didn't request this verification, please ignore this email.
     try {
       const mailOptions = {
         from: `"Support" <${process.env.EMAIL_USER}>`,
-        to,
-        subject,
-        text,
-        attachments
+      to,
+      subject,
+      text,
+      attachments
       };
 
       const info = await transporter.sendMail(mailOptions);

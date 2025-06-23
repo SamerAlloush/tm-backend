@@ -5,6 +5,7 @@ export enum UserRole {
   CUSTOMER = 'customer',
   VENDOR = 'vendor',
   MANAGER = 'manager',
+  PROJECT_MANAGER = 'project_manager',
   ADMIN = 'admin'
 }
 
@@ -69,7 +70,8 @@ export class RoleUtils {
       [UserRole.CUSTOMER]: 2,
       [UserRole.VENDOR]: 3,
       [UserRole.MANAGER]: 4,
-      [UserRole.ADMIN]: 5
+      [UserRole.PROJECT_MANAGER]: 5,
+      [UserRole.ADMIN]: 6
     };
     return hierarchy[role] || 0;
   }
@@ -97,7 +99,8 @@ export class RoleUtils {
       { value: UserRole.USER, label: 'User' },
       { value: UserRole.CUSTOMER, label: 'Customer' },
       { value: UserRole.VENDOR, label: 'Vendor' },
-      { value: UserRole.MANAGER, label: 'Manager' }
+      { value: UserRole.MANAGER, label: 'Manager' },
+      { value: UserRole.PROJECT_MANAGER, label: 'Project Manager' }
       // Admin role should be assigned by existing admins only
     ];
   }
