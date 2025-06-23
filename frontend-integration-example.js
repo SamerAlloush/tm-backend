@@ -13,7 +13,7 @@ const SignupForm = () => {
     email: '',
     phone: '',
     password: '',
-    role: 'user' // Default role
+    role: '' // Default to empty, force user to pick
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -23,7 +23,7 @@ const SignupForm = () => {
     { value: 'user', label: 'User' },
     { value: 'customer', label: 'Customer' },
     { value: 'vendor', label: 'Vendor' },
-    { value: 'manager', label: 'Manager' }
+    { value: 'manager', label: 'Manager' },
     // Note: 'admin' role should typically be assigned by existing admins
   ];
 
@@ -98,7 +98,7 @@ const SignupForm = () => {
         onChange={(e) => setFormData({...formData, role: e.target.value})}
         required
       >
-        <option value="">Select Role</option>
+        <option value="" disabled>Select Role</option>
         {availableRoles.map(role => (
           <option key={role.value} value={role.value}>
             {role.label}
