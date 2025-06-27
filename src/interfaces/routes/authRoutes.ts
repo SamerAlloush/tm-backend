@@ -1,8 +1,8 @@
-import express from 'express';
+import express, { Router } from 'express';
 import { signup, login, verifySignup, resendSignupOtp, debugOtp, getProfile, updateProfile } from '../controllers/authController';
 import { authenticateToken } from '../middleware/authMiddleware';
 
-const router = express.Router();
+const router: Router = express.Router();
 
 router.post('/signup', signup);
 router.post('/verify-signup', verifySignup);

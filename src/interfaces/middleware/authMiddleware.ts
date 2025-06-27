@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction, RequestHandler } from 'express';
 import jwt from 'jsonwebtoken';
 
 // Extend Request interface to include user
@@ -7,8 +7,9 @@ declare global {
     interface Request {
       user?: {
         id: string;
+        name: string;
         email: string;
-        roles?: string[];
+        role?: string;
       };
     }
   }
@@ -16,7 +17,7 @@ declare global {
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
 
-export const authenticateToken = (req: Request, res: Response, next: NextFunction): void => {
+export const authenticateToken: RequestHandler = (req, res, next) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
 
@@ -26,12 +27,18 @@ export const authenticateToken = (req: Request, res: Response, next: NextFunctio
   }
 
   try {
+    console.log('Verifying token:', token);
     const decoded = jwt.verify(token, JWT_SECRET) as any;
+    console.log('Decoded token data:', decoded);
+    
     req.user = {
       id: decoded.id,
+      name: decoded.name,
       email: decoded.email,
-      roles: decoded.roles || ['user']
+      role: decoded.role
     };
+    
+    console.log('Attached user data to request:', req.user);
     next();
   } catch (error) {
     console.error('Token verification failed:', error);
@@ -40,7 +47,7 @@ export const authenticateToken = (req: Request, res: Response, next: NextFunctio
   }
 };
 
-export const optionalAuth = (req: Request, res: Response, next: NextFunction): void => {
+export const optionalAuth: RequestHandler = (req, res, next) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
 
@@ -53,8 +60,9 @@ export const optionalAuth = (req: Request, res: Response, next: NextFunction): v
     const decoded = jwt.verify(token, JWT_SECRET) as any;
     req.user = {
       id: decoded.id,
+      name: decoded.name,
       email: decoded.email,
-      roles: decoded.roles || ['user']
+      role: decoded.role // Keep exact role from token
     };
   } catch (error) {
     // Token invalid, but continue without user info

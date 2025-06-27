@@ -10,7 +10,7 @@ export class VerifyOtp {
     if (!isValid) return null;
     const user = await this.userRepository.findByEmail(email);
     if (!user) return null;
-    const token = AuthService.generateToken({ id: user.id, email: user.email, roles: user.roles }, this.jwtSecret);
+    const token = AuthService.generateToken({ id: user.id, email: user.email, role: user.role }, this.jwtSecret);
     return { token, user };
   }
 } 

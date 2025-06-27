@@ -14,11 +14,12 @@ export class GetUserProfile {
       name: user.name,
       email: user.email,
       phone: user.phone,
-      roles: user.roles || ['user'],
-      // Don't return password, otp, or otpExpires
+      role: user.role, // Keep exact role, no defaults
+      isVerified: user.isVerified || false,
+      // Don't return password, otp, or otpExpiry
       password: '', // Will be excluded in response
       otp: undefined,
-      otpExpires: undefined
+      otpExpiry: undefined
     };
   }
 } 

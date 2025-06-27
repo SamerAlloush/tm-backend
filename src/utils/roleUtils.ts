@@ -1,12 +1,13 @@
 // Role-based Access Control Utilities
 
 export enum UserRole {
-  USER = 'user',
-  CUSTOMER = 'customer',
-  VENDOR = 'vendor',
-  MANAGER = 'manager',
+  ADMIN = 'admin',
+  HR = 'hr', 
+  ACCOUNTING = 'accounting',
+  PURCHASE_DEPARTMENT = 'purchase_department',
   PROJECT_MANAGER = 'project_manager',
-  ADMIN = 'admin'
+  MECHANICS = 'mechanics',
+  WORKER = 'worker'
 }
 
 export const VALID_ROLES = Object.values(UserRole);
@@ -20,10 +21,10 @@ export class RoleUtils {
   }
 
   /**
-   * Get default role for new users
+   * Get default role for new users (only used as fallback in extreme cases)
    */
   static getDefaultRole(): UserRole {
-    return UserRole.USER;
+    return UserRole.WORKER;
   }
 
   /**
@@ -37,7 +38,7 @@ export class RoleUtils {
    * Check if user has any of the specified roles
    */
   static hasAnyRole(userRoles: string[], requiredRoles: UserRole[]): boolean {
-    return requiredRoles.some(role => userRoles.includes(role));
+    return userRoles.some(role => requiredRoles.includes(role as UserRole));
   }
 
   /**
@@ -58,22 +59,23 @@ export class RoleUtils {
    * Check if user is manager or above
    */
   static isManagerOrAbove(userRoles: string[]): boolean {
-    return this.hasAnyRole(userRoles, [UserRole.MANAGER, UserRole.ADMIN]);
+    return this.hasAnyRole(userRoles, [UserRole.PROJECT_MANAGER, UserRole.ADMIN]);
   }
 
   /**
    * Get role hierarchy level (higher number = more privileges)
    */
   static getRoleLevel(role: UserRole): number {
-    const hierarchy = {
-      [UserRole.USER]: 1,
-      [UserRole.CUSTOMER]: 2,
-      [UserRole.VENDOR]: 3,
-      [UserRole.MANAGER]: 4,
-      [UserRole.PROJECT_MANAGER]: 5,
-      [UserRole.ADMIN]: 6
+    const roleHierarchy: Record<UserRole, number> = {
+      [UserRole.WORKER]: 1,
+      [UserRole.MECHANICS]: 2,
+      [UserRole.PURCHASE_DEPARTMENT]: 3,
+      [UserRole.ACCOUNTING]: 4,
+      [UserRole.HR]: 5,
+      [UserRole.PROJECT_MANAGER]: 6,
+      [UserRole.ADMIN]: 7
     };
-    return hierarchy[role] || 0;
+    return roleHierarchy[role] || 0;
   }
 
   /**
@@ -84,24 +86,50 @@ export class RoleUtils {
   }
 
   /**
-   * Validate and sanitize role input
+   * Validate role input - role is required, no defaults
    */
-  static validateRole(role: string): UserRole {
-    const normalizedRole = role?.toLowerCase();
-    return this.isValidRole(normalizedRole) ? normalizedRole as UserRole : this.getDefaultRole();
+  static validateRole(role: string | string[] | undefined): UserRole {
+    console.log('Validating role:', {
+      receivedRole: role,
+      roleType: typeof role,
+      isArray: Array.isArray(role)
+    });
+
+    // Handle array input
+    if (Array.isArray(role)) {
+      if (role.length === 0) {
+        throw new Error('Role is required. Please select a role from the available options.');
+      }
+      role = role[0]; // Take the first role if array
+    }
+
+    if (!role || role.trim() === '') {
+      throw new Error('Role is required. Please select a role from the available options.');
+    }
+
+    const normalizedRole = role.toLowerCase().trim();
+    console.log('Normalized role:', normalizedRole);
+    console.log('Valid roles:', VALID_ROLES);
+    
+    if (!this.isValidRole(normalizedRole)) {
+      throw new Error(`Invalid role: ${role}. Must be one of: ${VALID_ROLES.join(', ')}`);
+    }
+
+    return normalizedRole as UserRole;
   }
 
   /**
-   * Get available roles for signup (excluding admin)
+   * Get available roles for frontend
    */
-  static getSignupRoles(): { value: UserRole; label: string }[] {
+  static getAvailableRoles() {
     return [
-      { value: UserRole.USER, label: 'User' },
-      { value: UserRole.CUSTOMER, label: 'Customer' },
-      { value: UserRole.VENDOR, label: 'Vendor' },
-      { value: UserRole.MANAGER, label: 'Manager' },
-      { value: UserRole.PROJECT_MANAGER, label: 'Project Manager' }
-      // Admin role should be assigned by existing admins only
+      { label: 'Admin', value: UserRole.ADMIN },
+      { label: 'HR', value: UserRole.HR },
+      { label: 'Accounting', value: UserRole.ACCOUNTING },
+      { label: 'Purchase Department', value: UserRole.PURCHASE_DEPARTMENT },
+      { label: 'Project Manager', value: UserRole.PROJECT_MANAGER },
+      { label: 'Mechanics', value: UserRole.MECHANICS },
+      { label: 'Worker', value: UserRole.WORKER }
     ];
   }
 } 

@@ -7,8 +7,10 @@ import messageRoutes from './interfaces/routes/messageRoutes';
 import attachmentRoutes from './interfaces/routes/attachmentRoutes';
 import authRoutes from './interfaces/routes/authRoutes';
 import emailRoutes from './interfaces/routes/emailRoutes';
+import absenceRoutes from './interfaces/routes/absenceRoutes';
 import path from 'path';
 import cors from 'cors';
+import { Request, Response, NextFunction } from 'express';
 
 dotenv.config();
 
@@ -27,6 +29,7 @@ app.use('/api/messages', messageRoutes);
 app.use('/api/attachments', attachmentRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/email', emailRoutes);
+app.use('/api/absences', absenceRoutes);
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 // Demo endpoints from demoapp/app.js
@@ -37,6 +40,19 @@ app.post('/post', (req, res) => {
 
 app.get('/', (req, res) => {
   res.send('<h1>Hello World</h1>');
+});
+
+// Global error handler
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+  console.error('Global error handler:', err);
+  const statusCode = err.statusCode || 500;
+  const message = err.message || 'Something went wrong on the server!';
+  res.status(statusCode).json({
+    success: false,
+    status: statusCode,
+    message: message,
+    stack: process.env.NODE_ENV === 'development' ? err.stack : undefined,
+  });
 });
 
 mongoose.connect(MONGO_URI)
