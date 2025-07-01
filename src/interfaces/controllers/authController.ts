@@ -213,8 +213,9 @@ export const verifySignup: RequestHandler = asyncHandler(async (req, res) => {
   resendAttempts.delete(email);
   
   res.status(201).json({ 
+    success: true,
     message: 'Email verified successfully! Your account has been activated.',
-    successMessage: `Welcome ${result.user.name}! Your account has been verified. Please login with your email and password to access your dashboard.`,
+    successMessage: `Welcome ${result.user.name}! Your account has been verified. Please login with your email and password.`,
     user: { 
       id: result.user.id, 
       name: result.user.name, 
@@ -222,10 +223,15 @@ export const verifySignup: RequestHandler = asyncHandler(async (req, res) => {
       phone: result.user.phone,
       role: result.user.role
     },
-    redirect: '/login', // Redirect to login page after verification
-    success: true,
+    redirect: {
+      path: '/(auth)/login',
+      params: {
+        email: email,
+        message: 'Account verified successfully! Please login with your email and password.'
+      }
+    },
     accountVerified: true,
-    redirectDelay: 3000 // Delay redirect for 3 seconds to show success message
+    redirectDelay: 2000 // 2 seconds delay before redirect
   });
 });
 
